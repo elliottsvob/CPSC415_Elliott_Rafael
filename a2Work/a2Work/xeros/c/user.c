@@ -7,11 +7,11 @@
 
  void producer( void ) {
 /****************************/
+//n i -> Q
+    int         Q;
 
-    int         i;
-
-    for( i = 0; i < 5; i++ ) {
-        kprintf( "Produce %d\n", i );
+    for( Q = 0; Q < 5; Q++ ) {
+        kprintf( "Produce %d\n", Q );
         sysyield();
     }
 
