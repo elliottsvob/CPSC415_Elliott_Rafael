@@ -14,7 +14,8 @@ typedef struct struct_mem mem;
 struct struct_mem {
     mem         *next;
     mem         *prev;
-    int         size;
+    int          size;
+    mem  *sanityCheck;
 };
 
 static mem      *head;
@@ -41,21 +42,24 @@ static mem      *head;
 }
 
 
-void kfree(void * mem) {
-    mem *toFree = (mem) memp;
-    
-    if(toFree->sanityCheck == toFree) {
-    
+
+void kfree(void * memp) {
+     
+     mem *toFree = (mem *) memp;
+	if(toFree->sanityCheck == toFree) {
+
 		toFree->prev = NULL;
 		toFree->next = head;
 		head->prev = toFree;
 		head = toFree;
+
     	} 
         else {
 		kprintf("//----------------------------\n");
 		kprintf("//Invalid sanity check in kfree\n");
 		kprintf("//----------------------------\n");
     	}
+
 }
 
 
@@ -87,10 +91,12 @@ void kfree(void * mem) {
         }
     } else {
         r = (mem *) ( (int)p + size );
+
         *r = *p;
-        //This line is key for the sanity check or mem free
-	    r->sanityCheck = r;
-    
+
+	//This line is key for the sanity check or mem free
+	r->sanityCheck = r;
+
         if( p->next ) {
             p->next->prev = r;
         }

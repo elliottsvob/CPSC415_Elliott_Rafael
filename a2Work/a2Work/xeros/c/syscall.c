@@ -47,4 +47,15 @@
     return( syscall( SYS_STOP ) );
 }
 
+//---------------------------------------------------
+int	sysgetpid( void ){
+/**************************/
 
+    return( syscall( SYS_PID ) );
+}
+
+void	sysputs( char *str ){
+/**************************/
+
+    syscall( SYS_PUTS, str );
+}

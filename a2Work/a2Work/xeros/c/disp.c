@@ -15,6 +15,7 @@ void     dispatch( void ) {
     funcptr     fp;
     int         stack;
     va_list     ap;
+    char	*str;
 
     for( p = next(); p; ) {
       //      kprintf("Process %x selected stck %x\n", p, p->esp);
@@ -34,6 +35,13 @@ void     dispatch( void ) {
       case( SYS_STOP ):
 	p->state = STATE_STOPPED;
 	p = next();
+	break;
+      case( SYS_PID ):
+	p->ret = p->pid;
+	break;
+      case( SYS_PUTS ):
+	str = (char *)p->args;
+	kprintf( "%s", str );
 	break;
       default:
 	kprintf( "Bad Sys request %d, pid = %d\n", r, p->pid );
