@@ -9,7 +9,7 @@
 
     va_list	ap;
     int		rc;
-
+ 
     va_start( ap, req );
 
     __asm __volatile( " \
@@ -58,6 +58,6 @@ int	sysgetpid( void ){
 
 void	sysputs( char *str ){
 /**************************/
-
+	
     syscall( SYS_PUTS, str );
 }

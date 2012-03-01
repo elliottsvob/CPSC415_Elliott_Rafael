@@ -24,8 +24,9 @@
 /****************************/
 
     int         i;
-
+		char  str[] = "hello world!\0";
     for( i = 0; i < 5; i++ ) {
+    		sysputs(str);
         kprintf( "Consume %d \n", i );
         sysyield();
     }

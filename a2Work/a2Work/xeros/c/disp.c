@@ -40,7 +40,8 @@ void     dispatch( void ) {
 	p->ret = p->pid;
 	break;
       case( SYS_PUTS ):
-	str = (char *)p->args;
+  ap = (va_list)p->args;
+	str = va_arg(ap,char*);
 	kprintf( "%s", str );
 	break;
       default:
