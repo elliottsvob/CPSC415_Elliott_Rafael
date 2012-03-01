@@ -17,21 +17,21 @@
         sysyield();
     }
 
-    sysstop();
+    return;
 }
 //extra comment done online
  void consumer( void ) {
 /****************************/
 
     int         i;
-		char  str[] = "hello world!\0";
+		//char  str[] = "hello world!\0";
     for( i = 0; i < 5; i++ ) {
-    		sysputs(str);
+    		//sysputs(str);
         kprintf( "Consume %d \n", i );
         sysyield();
     }
 
-    sysstop();
+    return;
 }
 
  void     root( void ) {

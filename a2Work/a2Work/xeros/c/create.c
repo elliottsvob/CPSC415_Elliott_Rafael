@@ -56,6 +56,8 @@ int      create( funcptr fp, int stack ) {
 
     cf->esp = (int)(cf + 1);
     cf->ebp = cf->esp;
+    int *ptr = (int*)cf->esp;
+    *ptr = &sysstop;
     p->esp = (int)cf;
     p->state = STATE_READY;
     p->pid = nextpid++;
