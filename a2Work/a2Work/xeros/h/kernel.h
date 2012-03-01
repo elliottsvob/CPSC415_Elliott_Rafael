@@ -43,6 +43,9 @@ extern void kfree(void *ptr);
 #define SYS_YIELD       1
 #define SYS_CREATE      2
 #define SYS_TIMER       3
+#define SYS_PID       	4
+#define SYS_PUTS       	5
+
 
 typedef void    (*funcptr)(void);
 
@@ -92,6 +95,9 @@ extern int      create( funcptr fp, int stack );
 extern int      syscreate( funcptr fp, int stack );
 extern int      sysyield( void );
 extern int      sysstop( void );
+//unsigned 
+extern int	sysgetpid( void );
+extern void	sysputs( char *str );
 
 extern void     root( void );
 
