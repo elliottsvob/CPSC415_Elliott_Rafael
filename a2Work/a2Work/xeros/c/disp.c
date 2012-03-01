@@ -34,6 +34,8 @@ void     dispatch( void ) {
 	break;
       case( SYS_STOP ):
 	p->state = STATE_STOPPED;
+	
+	kfree(p->stack_top);
 	p = next();
 	break;
       case( SYS_PID ):

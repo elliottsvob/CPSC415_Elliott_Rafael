@@ -41,6 +41,7 @@ int      create( funcptr fp, int stack ) {
 
 
     cf = kmalloc( stack*2);
+    p->stack_top = (long) cf;
     if( !cf ) {
         return( -1 );
     }
