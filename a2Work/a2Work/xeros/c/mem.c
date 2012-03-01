@@ -42,20 +42,37 @@ static mem      *head;
 }
 
 
+<<<<<<< HEAD
 void kfree(void * memp) {
      
      mem *toFree = (mem *) memp;
 	if(toFree->sanityCheck == toFree) {
+=======
+void kfree(void * mem) {
+    mem *toFree = (mem) memp;
+    
+    if(toFree->sanityCheck == toFree) {
+    
+>>>>>>> d074e74d3f80e67bad639c2b18e8e8aa80f4f6e1
 		toFree->prev = NULL;
 		toFree->next = head;
 		head->prev = toFree;
 		head = toFree;
+<<<<<<< HEAD
     	} else {
 		kprintf("//----------------------------\n");
 		kprintf("//Invalid sanity check in kfree\n");
 		kprintf("//----------------------------\n");
 		return;
     	}     
+=======
+    	} 
+        else {
+		kprintf("//----------------------------\n");
+		kprintf("//Invalid sanity check in kfree\n");
+		kprintf("//----------------------------\n");
+    	}
+>>>>>>> d074e74d3f80e67bad639c2b18e8e8aa80f4f6e1
 }
 
 
@@ -89,9 +106,15 @@ void kfree(void * memp) {
         r = (mem *) ( (int)p + size );
 
         *r = *p;
+<<<<<<< HEAD
 	//This line is key for the sanity check or mem free
 	r->sanityCheck = r;
 
+=======
+        //This line is key for the sanity check or mem free
+	    r->sanityCheck = r;
+    
+>>>>>>> d074e74d3f80e67bad639c2b18e8e8aa80f4f6e1
         if( p->next ) {
             p->next->prev = r;
         }

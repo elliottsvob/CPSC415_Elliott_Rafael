@@ -10,14 +10,21 @@
 //n i -> Q
     int         Q;
 
+<<<<<<< HEAD
     for( Q = 0; Q < 5; Q++ ) {
         kprintf( "Produce %d\n", Q );
+=======
+    int        K;
+
+    for( K = 0; K < 5; K++ ) {
+        kprintf( "Produce %d\n", K );
+>>>>>>> d074e74d3f80e67bad639c2b18e8e8aa80f4f6e1
         sysyield();
     }
 
     sysstop();
 }
-
+//extra comment done online
  void consumer( void ) {
 /****************************/
 
