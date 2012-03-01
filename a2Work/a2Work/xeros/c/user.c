@@ -8,10 +8,10 @@
  void producer( void ) {
 /****************************/
 
-    int         i;
+    int        K;
 
-    for( i = 0; i < 5; i++ ) {
-        kprintf( "Produce %d\n", i );
+    for( K = 0; K < 5; K++ ) {
+        kprintf( "Produce %d\n", K );
         sysyield();
     }
 
