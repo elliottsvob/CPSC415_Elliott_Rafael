@@ -47,11 +47,14 @@ extern void kfree(void *ptr);
 #define SYS_PID       	4
 #define SYS_PUTS       	5
 #define SYS_SEND 				6
+#define SYS_RECV				7
 
 
 //IPC constants
 #define INVALID_PID    -1
 #define PARAM_ERROR		 -2	
+#define SEND_ERROR		 -1
+#define NO_RECV			 	 -2
 
 
 typedef void    (*funcptr)(void);
@@ -113,9 +116,9 @@ extern void	sysputs( char *str );
 // IPC Done by ES
 //---------------------------------------------------
 extern int syssend( int dest_pid, void * buffer, int buffer_len);
-extern int sysrecv( unsigned int *from pid, void *buffer, int buffer len );
-extern int send(int dest_pid, void *buffer, int buffer_len);
-extern int recv(unsigned int * from_pid, void * buffer, int buffer_len);
+extern int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len);
+extern int send(int dest_pid, void *buffer, int buffer_len, pcb*s);
+extern int recv(unsigned int  *from_pid, void * buffer, int buffer_len,pcb*r);
 
 
 extern void     root( void );

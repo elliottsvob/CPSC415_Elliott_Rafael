@@ -66,13 +66,13 @@ void	sysputs( char *str ){
 //---------------------------------------------------
 int syssend( int dest_pid, void * buffer, int buffer_len){
 /**************************/
-		return( syscall(SYS_SEND, dest_pid, buffer, buffer_len);
+		return( syscall(SYS_SEND, dest_pid, buffer, buffer_len));
 } 
 //---------------------------------------------------
 // Done by ES
 //---------------------------------------------------
-int sysrecv( unsigned int *from pid, void *buffer, int buffer len ){
+int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len ){
 		
-		return( syscall(SYS_RECV, from_pid, buffer, buffer_len);
+		return( syscall(SYS_RECV, *from_pid, buffer, buffer_len));
 }
 

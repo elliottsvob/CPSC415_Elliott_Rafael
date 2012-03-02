@@ -21,10 +21,11 @@ void     dispatch( void ) {
     char	*str;
     int buf_len;
     int d_pid;
-    unsigned int* f_pid;
+    unsigned int *f_pid;
     void * buffer;
     
     int recv_error;
+    int send_error;
     
 
     for( p = next(); p; ) {
@@ -44,16 +45,18 @@ void     dispatch( void ) {
 	break;
       case( SYS_STOP ):
 	p->state = STATE_STOPPED;
-	kfree(p->stack_top);
+	kfree((void*)p->stack_top);
 	p = next();
 	break;
       case( SYS_PID ):
 	p->ret = p->pid;
+	//p = next();
 	break;
       case( SYS_PUTS ):
   ap = (va_list)p->args;
 	str = va_arg(ap,char*);
 	kprintf( "%s", str );
+	//p = next();
 	break;
 			case( SYS_SEND ):
 	ap =(va_list)p->args;
@@ -61,9 +64,15 @@ void     dispatch( void ) {
 	buffer = va_arg(ap, void*);
 	buf_len = va_arg(ap, int); 
 	
-	if(!send(d_pid, buffer, buf_len,p){
+	send_error = send(d_pid, buffer, buf_len,p);
+		kprintf("Message Sent: %s in disp\n", buffer);
+	if ( send_error == SEND_ERROR){	
 		kprintf("Send to process: %d failed\n", d_pid);
 		}
+	else if( send_error == NO_RECV){
+		kprintf("Process: %d not blocking\n", d_pid);
+			}
+	p = next();		
 	break;
 			case( SYS_RECV ):
 	
@@ -72,13 +81,16 @@ void     dispatch( void ) {
 	buffer = va_arg(ap, void*);
 	buf_len = va_arg(ap, int); 
 	
-	recv_error = recv(f_pid, buffer, buf_len);
+	recv_error = recv(f_pid, buffer, buf_len,p);
+	kprintf("Receive Message: %s\n", buffer);
 	if(recv_error == INVALID_PID){
 		kprintf("Process id: %d is invalid\n", f_pid);
 	}
 	if(recv_error == PARAM_ERROR){
 		kprintf("Receive error\n");
 	}
+	p = next();		
+	break;
 	
 		
       default:
