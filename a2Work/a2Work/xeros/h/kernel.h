@@ -38,6 +38,7 @@ extern void kfree(void *ptr);
 
 #define STATE_STOPPED   0
 #define STATE_READY     1
+#define STATE_BLOCKED		2
 
 #define SYS_STOP        0
 #define SYS_YIELD       1
@@ -45,12 +46,19 @@ extern void kfree(void *ptr);
 #define SYS_TIMER       3
 #define SYS_PID       	4
 #define SYS_PUTS       	5
+#define SYS_SEND 				6
+
+
+//IPC constants
+#define INVALID_PID    -1
+#define PARAM_ERROR		 -2	
 
 
 typedef void    (*funcptr)(void);
 
 typedef struct struct_pcb pcb;
 struct struct_pcb {
+		long				stack_top;
     long        esp;
     pcb         *next;
     int         state;
@@ -92,12 +100,23 @@ extern void     contextinit( void );
 extern int      contextswitch( pcb *p );
 extern int      create( funcptr fp, int stack );
 
+
+
+
 extern int      syscreate( funcptr fp, int stack );
 extern int      sysyield( void );
 extern int      sysstop( void );
 //unsigned 
 extern int	sysgetpid( void );
 extern void	sysputs( char *str );
+//---------------------------------------------------
+// IPC Done by ES
+//---------------------------------------------------
+extern int syssend( int dest_pid, void * buffer, int buffer_len);
+extern int sysrecv( unsigned int *from pid, void *buffer, int buffer len );
+extern int send(int dest_pid, void *buffer, int buffer_len);
+extern int recv(unsigned int * from_pid, void * buffer, int buffer_len);
+
 
 extern void     root( void );
 

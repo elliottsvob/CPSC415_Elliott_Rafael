@@ -57,12 +57,20 @@ int      create( funcptr fp, int stack ) {
 
     cf->esp = (int)(cf + 1);
     cf->ebp = cf->esp;
+    //set what ebp points to to the address of systop
+    //allows the return key word to run sysstop();
     int *ptr = (int*)cf->esp;
     *ptr = &sysstop;
+    
     p->esp = (int)cf;
     p->state = STATE_READY;
-    p->pid = nextpid++;
-
+    
+    if(p->pid == 0){
+    	p->pid = i+1;
+    	}
+    else{
+    	p->pid *= 10;
+    	}
     ready( p );
     return( p->pid );
 }

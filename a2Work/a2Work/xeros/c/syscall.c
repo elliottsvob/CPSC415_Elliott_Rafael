@@ -61,3 +61,18 @@ void	sysputs( char *str ){
 	
     syscall( SYS_PUTS, str );
 }
+//---------------------------------------------------
+// Done by ES
+//---------------------------------------------------
+int syssend( int dest_pid, void * buffer, int buffer_len){
+/**************************/
+		return( syscall(SYS_SEND, dest_pid, buffer, buffer_len);
+} 
+//---------------------------------------------------
+// Done by ES
+//---------------------------------------------------
+int sysrecv( unsigned int *from pid, void *buffer, int buffer len ){
+		
+		return( syscall(SYS_RECV, from_pid, buffer, buffer_len);
+}
+
