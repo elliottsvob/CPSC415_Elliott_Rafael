@@ -76,17 +76,17 @@ int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * r)
 			s_len = va_arg(ap, int);
 			kprintf("Receive \n");
 			if (s_len < buffer_len){
-						blkcopy(buffer,s_buf , s_len);
-						code = s_len;
-				}else {
-						blkcopy(buffer,s_buf, buffer_len);
-						code = buffer_len;
-				}
-				ready ( s );
-				ready ( r );
+				blkcopy(buffer,s_buf , s_len);
+				code = s_len;
+			}else {
+				blkcopy(buffer,s_buf, buffer_len);
+				code = buffer_len;
 			}
+			ready ( s );
+			ready ( r );
+		}
 		else {
 		 r->state = STATE_BLOCKED;
-			}		
+		}		
 	
 }

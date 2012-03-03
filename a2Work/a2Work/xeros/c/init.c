@@ -41,6 +41,9 @@ initproc()				/* The beginning */
 	
 	create( root, PROC_STACK );
 	kprintf("create inited\n");
+
+	//Idle Process Call by RT
+	//create( idleproc, PROC_STACK );
   
 	dispatch();
   

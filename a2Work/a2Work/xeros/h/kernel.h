@@ -119,7 +119,10 @@ extern int syssend( int dest_pid, void * buffer, int buffer_len);
 extern int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len);
 extern int send(int dest_pid, void *buffer, int buffer_len, pcb*s);
 extern int recv(unsigned int  *from_pid, void * buffer, int buffer_len,pcb*r);
-
+//---------------------------------------------------
+// 3.6 by RT
+//---------------------------------------------------
+extern void idleproc (void);
 
 extern void     root( void );
 

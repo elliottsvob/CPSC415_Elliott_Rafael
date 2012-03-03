@@ -66,3 +66,12 @@
         sysyield();
     }
 }
+
+void     idleproc( void ) {
+/****************************/
+    kprintf("Iddle process has been called\n");  	
+		
+    for( ;; ) {
+        //sysyield();
+    }
+}

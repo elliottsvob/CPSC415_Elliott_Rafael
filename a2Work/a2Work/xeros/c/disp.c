@@ -97,7 +97,8 @@ void     dispatch( void ) {
 	kprintf( "Bad Sys request %d, pid = %d\n", r, p->pid );
       }
     }
-
+	//TODO 
+	//CReate Iddle process
     kprintf( "Out of processes: dying\n" );
     
     for( ;; );
