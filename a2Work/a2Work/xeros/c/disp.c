@@ -27,6 +27,11 @@ void     dispatch( void ) {
     int recv_error;
     int send_error;
     
+	/*proctab[IDLE_PROC].state == STATE_BLOCKED;
+	head ->next = NULL;
+	tail = head;*/
+
+	while(1){
 
     for( p = next(); p; ) {
       //      kprintf("Process %x selected stck %x\n", p, p->esp);
@@ -104,6 +109,10 @@ void     dispatch( void ) {
       }
     }
 
+	kprintf( "Out of processes: iddle process\n" );
+	//TODO 
+	r = contextswitch( &proctab[IDLE_PROC]);
+	}
     kprintf( "Out of processes: dying\n" );
     
     for( ;; );

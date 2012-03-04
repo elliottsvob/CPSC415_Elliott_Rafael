@@ -59,6 +59,8 @@ extern void kfree(void *ptr);
 #define SEND_ERROR		 -1
 #define NO_RECV			 	 -2
 
+//Idle process constant by RT
+#define IDLE_PROC	1
 
 typedef void    (*funcptr)(void);
 
@@ -71,7 +73,12 @@ struct struct_pcb {
     int         pid;
     int         ret;
     long        args;
+<<<<<<< HEAD
     pcb					*sender;
+=======
+	pcb         *receive_queue;
+	pcb         *receive_qtail;
+>>>>>>> 78399f83d6fd5a0a85ca5fe63ff5f6b51a364f18
 };
 
 extern pcb     proctab[MAX_PROC];
@@ -123,7 +130,10 @@ extern int syssend( int dest_pid, void * buffer, int buffer_len);
 extern int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len);
 extern int send(int dest_pid, void *buffer, int buffer_len, pcb*s);
 extern int recv(unsigned int  *from_pid, void * buffer, int buffer_len,pcb*r);
-
+//---------------------------------------------------
+// 3.6 by RT
+//---------------------------------------------------
+extern void idleproc (void);
 
 extern void     root( void );
 
