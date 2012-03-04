@@ -68,6 +68,8 @@ struct struct_pcb {
     int         pid;
     int         ret;
     long        args;
+	pcb         *receive_queue;
+	pcb         *receive_qtail;
 };
 
 extern pcb     proctab[MAX_PROC];

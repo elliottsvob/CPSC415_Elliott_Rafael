@@ -60,10 +60,13 @@ int      create( funcptr fp, int stack ) {
     //set what ebp points to to the address of systop
     //allows the return key word to run sysstop();
     int *ptr = (int*)cf->esp;
-    *ptr = &sysstop;
+    *ptr = (int)&sysstop;
     
     p->esp = (int)cf;
     p->state = STATE_READY;
+	//message queues initialized to null
+	p->receive_queue = NULL;
+	p->receive_qtail = NULL;
     
     if(p->pid == 0){
     	p->pid = i+1;
