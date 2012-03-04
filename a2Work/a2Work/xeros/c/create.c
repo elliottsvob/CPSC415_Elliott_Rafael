@@ -72,7 +72,7 @@ int      create( funcptr fp, int stack ) {
     	p->pid = i+1;
     	}
     else{
-    	p->pid *= 10;
+    	p->pid *= MAX_PROC;
     	}
     ready( p );
     return( p->pid );

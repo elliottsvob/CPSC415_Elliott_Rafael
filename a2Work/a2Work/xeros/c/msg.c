@@ -79,12 +79,12 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * s)
 	int code = SEND_ERROR;
 		
 		kprintf("Send got : %s \n", buffer);
-		if(proctab[dest_pid%10 -1].state == STATE_STOPPED){
+		r = &proctab[dest_pid%MAX_PROC -1];
+
+		if(r->state == STATE_STOPPED){
 			return code;
 		}
 		//finds the reciver based on the destination process id
-		r = &proctab[dest_pid%10 -1];
-		
 		if(r->state == STATE_BLOCKED){
 						
 			ap = (va_list)r->args;
@@ -107,12 +107,11 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * s)
 				return code;
 			}
 				
-		}else{
-			//s->state = STATE_BLOCKED;
-			add_recvQ (s, r);
-			code = NO_RECV;
-			return code;
-		}	
+		}
+		//s->state = STATE_BLOCKED;
+		add_recvQ (s, r);
+		code = NO_RECV;
+		return code;	
 }
 int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * r)
 {
@@ -134,7 +133,7 @@ int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * r)
 			s = r->receive_queue;
 		}
 	}else{
-		s = &proctab[*from_pid%10 -1];	
+		s = &proctab[*from_pid%MAX_PROC -1];	
 	}	
 	
 	if (in_recvQ(s,r)) {		
