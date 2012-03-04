@@ -19,7 +19,7 @@
         movl %%eax, %0 \n\
         "
         : "=g" (rc)
-        : "g" (req), "g" (ap), "i" (KERNEL_INT)
+        : "g" (req), "g" (ap), "i" (SYSCALL_INT)
         : "%eax" 
     );
  

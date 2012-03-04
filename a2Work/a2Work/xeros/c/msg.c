@@ -5,160 +5,157 @@
 #include <stdarg.h>
 
 /* Your code goes here */
-//----------------------------------------------------
-//							Helper MEthods
-//----------------------------------------------------
-//adds the sender (s) process to the receiver's queue
-void add_recvQ(pcb *s, pcb *r)
+int ipc_valid(int* d, void * b, int l);
+void process_table_dump();
+void push(pcb *s, pcb*r);
+pcb*poll(pcb*r);
+int peek(pcb*r);
+int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 {
-	if (r->receive_queue == NULL) {
-		r->receive_queue = s;
-		r->receive_qtail = s;
-		//s->next = NULL; // cannot be done cuz dispatcher uses next to call next process.
-	}else {
-		r->receive_qtail->next = s;
-		r->receive_qtail = s;
-	}
-	s->state = STATE_BLOCKED;
-}
-
-//Returns 1 if found, 0 otherwise
-//NOTE:  This method also removes the process from the queue
-int in_recvQ(pcb *s, pcb *r)
-{
-	pcb *p;
-
-	if (r->receive_queue == NULL) {
-		r->state = STATE_BLOCKED;
-		return 0;
-	}
-	if (r->receive_queue == s){
-		//checks if there was only one element in the queue
-		if (r->receive_qtail == s) 	{
-			r->receive_queue = NULL;
-			r->receive_qtail = NULL;
-			return 1;
-		}
-		r->receive_queue = r->receive_queue->next;
-		return 1;
-	}
-	//
-	p = r->receive_queue;
-	while (p != r->receive_qtail){
-		//if it finds the sender process in the queue,
-		//it is remove from the queue and returns 1
-		//else, we iterate till the end
-		if(p->next == s){
-			if (r->receive_qtail = s){
-				p->next = NULL;
-				r->receive_qtail = p;
-			}
-			else {
-				p->next = p->next->next;
-			}
-			return 1;
-		}
-		p = p->next;
-	}
-
-<<<<<<< HEAD
-
-=======
-	return 0;
-}
-//----------------------------------------------------
-//							External Methods
-//----------------------------------------------------
-int send(int dest_pid, void *buffer, int buffer_len, pcb * s)
-{
-	
-	va_list ap;
-	pcb * r; 
-	int i ;
-	
-	void * r_buf;
-	int 	 r_len;
-	unsigned int * pid;
-	int code = SEND_ERROR;
-		
-		kprintf("Send got : %s \n", buffer);
-		r = &proctab[dest_pid%MAX_PROC -1];
-
-		if(r->state == STATE_STOPPED){
-			return code;
-		}
-		//finds the reciver based on the destination process id
-		if(r->state == STATE_BLOCKED){
-						
-			ap = (va_list)r->args;
-			pid = va_arg(ap, unsigned int *);
-			
-			if (*pid == s->pid || *pid ==0){
-				r_buf = va_arg(ap, void*);
-				r_len = va_arg(ap, int);
+		pcb * dest_pcb;
+		va_list recvr_args;
+		void *recv_buf;
+		int recv_len;
+		int code;
+		process_table_dump();		
+		dest_pcb = &proctab[(dest_pid%MAX_PROC) -1];
+		kprintf("Dest pcb state is: %d\n", dest_pcb->pid);
+		switch (dest_pcb->state){
+			case (STATE_BLOCKED):
+				recvr_args = (va_list)dest_pcb->args;
+				va_arg(recvr_args,unsigned int*);
+				recv_buf = va_arg(recvr_args, void*);
+				recv_len = va_arg(recvr_args, int);
 				
-				if (r_len < buffer_len){
-						blkcopy(r_buf, buffer, r_len);
-						code = r_len;
+				if (recv_len < buffer_len){
+						blkcopy(recv_buf, buffer, recv_len);
+						code = recv_len;
 				}else {
-						blkcopy(r_buf, buffer, buffer_len);
+						blkcopy(recv_buf, buffer, buffer_len);
 						code = buffer_len;
 				}
-				kprintf("%s buffer\n", r_buf);
-				ready ( s );
-				ready ( r );
-				return code;
-			}
 				
-		}
-		//s->state = STATE_BLOCKED;
-		add_recvQ (s, r);
-		code = NO_RECV;
-		return code;	
+				ready(dest_pcb);
+				ready(send_pcb);
+				break;
+				
+			case (STATE_STOPPED):
+				code = -1;
+				break;
+				
+			default:
+				send_pcb->state = STATE_BLOCKED;
+				push(send_pcb,dest_pcb);
+				code = 0;
+				break;
+				}
+	process_table_dump();		
+	wait();
+
+	return code;
 }
-int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * r)
+int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * recv_pcb)
 {
-	va_list ap;
-	pcb * s; 
-	int i ;
+	pcb * send_pcb;
+	va_list send_args;
+	void *send_buf;
+	int send_len;
+	int code;
 	
-	void * s_buf;
-	int 	 s_len;
-	unsigned int * pid;
-	int code = -1;
 	
-	if(*from_pid==0){
-	// This code is run when receive from any
-		if(r->receive_queue = NULL){
-			r->state = STATE_BLOCKED;
-			return;
-		} else {
-			s = r->receive_queue;
-		}
-	}else{
-		s = &proctab[*from_pid%MAX_PROC -1];	
-	}	
-	
-	if (in_recvQ(s,r)) {		
-		//if(proctab[*from_pid%10 -1].state == STATE_BLOCKED){
-		//s = &proctab[*from_pid%10 -1];
-			ap = (va_list)s->args;
-			pid = va_arg(ap, int);
-			s_buf = va_arg(ap, void*);
-			kprintf("s_buf: %s\n", s_buf);
-			s_len = va_arg(ap, int);
-			//kprintf("Receive \n");
-			if (s_len < buffer_len){
-				blkcopy(buffer,s_buf , s_len);
-				code = s_len;
-			}else {
-				blkcopy(buffer,s_buf, buffer_len);
-				code = buffer_len;
+	if(!from_pid ){
+		
+		if( peek(recv_pcb)){
+			send_pcb = poll(recv_pcb);
+		}else{
+			recv_pcb->state = STATE_BLOCKED;
+			return 0;
 			}
-			ready ( s );
-			ready ( r );
-	} else {
-		 r->state = STATE_BLOCKED;
-	}		
+	}
+	else{
+		send_pcb = &proctab[((int)from_pid%MAX_PROC) -1];
+	}
+	switch (send_pcb->state){
+			case (STATE_BLOCKED):
+			
+				send_args = (va_list)send_pcb->args;
+				va_arg(send_args,unsigned int*);
+				send_buf = va_arg(send_args, void*);
+				send_len = va_arg(send_args, int);
+				
+				if (send_len < buffer_len){
+						blkcopy(buffer, send_buf, send_len);
+						code = send_len;
+				}else {
+						blkcopy(buffer, send_buf, buffer_len);
+						code = buffer_len;
+				}
+				ready(send_pcb);
+				ready(recv_pcb);
+				break;
+				
+			case (STATE_STOPPED):
+			
+				code = -1;
+				break;
+				
+			default:
+				recv_pcb->state = STATE_BLOCKED;
+				code = 0;
+				break;
+				}
+	//process_table_dump();
+	//wait();
+	return code;
+	
 }
->>>>>>> 78399f83d6fd5a0a85ca5fe63ff5f6b51a364f18
+
+void process_table_dump()
+{
+	pcb*p;
+	
+	int i; 
+	kprintf("-------------------------------------------\n");
+	for (i=0;i < 4; i++){
+		p = &proctab[i];
+		kprintf("Process: %d at index: %d \nHas State:",     p->pid,i);
+		
+		switch (p->state){
+			case (STATE_STOPPED):
+				kprintf("STATE_STOPPED\n");break;
+			
+			case (STATE_READY):
+				kprintf("STATE_READY\n");break;
+			case (STATE_BLOCKED): 
+				kprintf("STATE_BLOCKED\n");break;
+			default:break;
+		
+		}
+		kprintf("-------------------------------------------\n");
+		}
+	}
+
+void wait(){
+	int i = 0;
+	for( i ; i < 9999999;i++){}
+}
+
+void push(pcb *s, pcb*r){
+		pcb *temp = r;
+		while(temp->sender){
+			temp = temp->sender;
+		}
+		temp->sender = s;
+}
+pcb * poll(pcb*r)
+{
+	pcb * s = r->sender;
+	r->sender = r->sender->sender;
+	return s;
+	
+}
+int peek(pcb*r)
+{
+	return r->sender ? 1:0;
+}
+

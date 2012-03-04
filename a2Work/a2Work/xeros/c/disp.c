@@ -31,12 +31,14 @@ void     dispatch( void ) {
 	head ->next = NULL;
 	tail = head;*/
 
-	while(1){
-
+	//while(1){
+	
     for( p = next(); p; ) {
       //      kprintf("Process %x selected stck %x\n", p, p->esp);
       int i;
       r = contextswitch( p );
+      	
+      	kprintf("Case : %d\n", r);
       switch( r ) {
       case( SYS_CREATE ):
 	ap = (va_list)p->args;
@@ -84,6 +86,8 @@ void     dispatch( void ) {
 	ap = (va_list)p->args; 
 	f_pid = va_arg(ap, unsigned int*);
 	
+		kprintf("PID is: %d\n", f_pid);
+	 
 	buffer = va_arg(ap, void*);
 	buf_len = va_arg(ap, int); 	
 	recv_error = recv(f_pid, buffer, buf_len,p);
@@ -97,12 +101,13 @@ void     dispatch( void ) {
 	p = next();		
 	break;
 	
-		/*	case ( TIMER_INT ) :
+			case ( TIMER_INT ) :
+			kprintf("Timer interupt-disp\n");
 	ready( p );
 	p = next();
 	end_of_intr();
 	break;
-	*/
+	
 		
       default:
 	kprintf( "Bad Sys request %d, pid = %d\n", r, p->pid );
@@ -110,9 +115,9 @@ void     dispatch( void ) {
     }
 
 	kprintf( "Out of processes: iddle process\n" );
-	//TODO 
-	r = contextswitch( &proctab[IDLE_PROC]);
-	}
+/*	//TODO */
+/*	r = contextswitch( &proctab[IDLE_PROC]);*/
+	
     kprintf( "Out of processes: dying\n" );
     
     for( ;; );

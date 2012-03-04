@@ -33,7 +33,8 @@ extern void *kmalloc(int size);
 extern void kfree(void *ptr);
 
 #define MAX_PROC        64
-#define KERNEL_INT      80
+#define SYSCALL_INT     80
+
 #define PROC_STACK      (4096 * 4)
 
 #define TIMER_INT				81
@@ -73,12 +74,9 @@ struct struct_pcb {
     int         pid;
     int         ret;
     long        args;
-<<<<<<< HEAD
-    pcb					*sender;
-=======
-	pcb         *receive_queue;
-	pcb         *receive_qtail;
->>>>>>> 78399f83d6fd5a0a85ca5fe63ff5f6b51a364f18
+    pcb 				*sender;
+
+
 };
 
 extern pcb     proctab[MAX_PROC];

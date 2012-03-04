@@ -11,7 +11,7 @@ pcb     proctab[MAX_PROC];
 
 /* make sure interrupts are armed later on in the kernel development
  */
-#define STARTING_EFLAGS         0x00003000
+#define STARTING_EFLAGS         0x00003200
 
 static int      nextpid = 1;
 
@@ -65,8 +65,7 @@ int      create( funcptr fp, int stack ) {
     p->esp = (int)cf;
     p->state = STATE_READY;
 	//message queues initialized to null
-	p->receive_queue = NULL;
-	p->receive_qtail = NULL;
+
     
     if(p->pid == 0){
     	p->pid = i+1;

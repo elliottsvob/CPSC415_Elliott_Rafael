@@ -4,7 +4,7 @@
 #include <kernel.h>
 #include <i386.h>
 
-void _KernelEntryPoint();
+void _common_entry_point();
 void _timer_entry_point();
 void _syscall_entry_point();
 
@@ -48,7 +48,7 @@ int contextswitch( pcb *p ) {
      * 6.  store the request code, trap flag and args into variables
      * 7.  return to system servicing code
      */
- 
+ 		kprintf("ctswBeg\n");
     __asm __volatile( " \
         pushf \n\
         pusha \n\
@@ -59,8 +59,18 @@ int contextswitch( pcb *p ) {
         movl    %%eax, 28(%%esp) \n\
         popa \n\
         iret \n\
-    _KernelEntryPoint: \n\
-        pusha  \n\
+    _timer_entry_point: \n\
+    		cli \n\
+    		pushf \n\
+    		pusha \n\
+    		movl   $0x1, %%eax \n\
+    		jmp _common_entry_point \n\
+    _syscall_entry_point: \n\
+    		cli \n\
+    		pushf \n\
+    		pusha \n\
+    		movl	$0x0, %%eax \n\
+    _common_entry_point: \n\
         movl    %%eax, %%ebx \n\
         movl    saveESP, %%eax  \n\
         movl    %%esp, saveESP  \n\
@@ -81,16 +91,17 @@ int contextswitch( pcb *p ) {
      */
     p->esp = saveESP;
     p->args = args;
-
+		kprintf("ctswEnd\n");
     return rc;
 }
 
 void contextinit( void ) {
 /*******************************/
 
-   set_evec( KERNEL_INT,  _KernelEntryPoint );
-   //set_evec( IRQ0,  _timer_entry_point );
-  // initPIT(100);
-
+   set_evec( SYSCALL_INT,  _syscall_entry_point );
+   set_evec( 32,  _timer_entry_point );
+   
+   initPIT(1);
+		 
 }
 
