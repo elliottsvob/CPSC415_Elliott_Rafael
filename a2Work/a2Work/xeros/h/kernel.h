@@ -56,6 +56,8 @@ extern void kfree(void *ptr);
 #define SEND_ERROR		 -1
 #define NO_RECV			 	 -2
 
+//Idle process constant by RT
+#define IDLE_PROC	1
 
 typedef void    (*funcptr)(void);
 

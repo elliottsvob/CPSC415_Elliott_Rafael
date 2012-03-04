@@ -43,7 +43,13 @@
 
     return;
 }
+void     foo( void ) {
+/****************************/
 
+    kprintf("foo!\n");  	
+		
+    sysstop();
+}
  void     root( void ) {
 /****************************/
 
@@ -53,13 +59,21 @@
     
     kprintf("Root has been called\n");
 	
-    sysyield();
-    sysyield();
-    int prod = syscreate( &producer, 4096 );
-    int cons = syscreate( &consumer, 4096 );
+	//syscreate( &foo, 4096 );
+	sysyield();
+	int prod = syscreate( &producer, 4096 );
+	int cons = syscreate( &consumer, 4096 );
+	kprintf("/-------------------\n");
+	kprintf("Producer ID: %d\n", prod);
+	kprintf("Consumer ID: %d\n", cons);
+	kprintf("/-------------------\n");
     
+
     
-		
+    sysyield();
+
+    
+    //sysstop();
 			
 		
     for( ;; ) {
@@ -69,9 +83,11 @@
 
 void     idleproc( void ) {
 /****************************/
+
     kprintf("Iddle process has been called\n");  	
 		
     for( ;; ) {
         //sysyield();
     }
 }
+
