@@ -5,6 +5,8 @@
 #include <i386.h>
 
 void _KernelEntryPoint();
+void _timer_entry_point();
+void _syscall_entry_point();
 
 unsigned int        saveESP;
 unsigned int        rc;
@@ -86,7 +88,9 @@ int contextswitch( pcb *p ) {
 void contextinit( void ) {
 /*******************************/
 
-   set_evec( KERNEL_INT, _KernelEntryPoint );
+   set_evec( KERNEL_INT,  _KernelEntryPoint );
+   //set_evec( IRQ0,  _timer_entry_point );
+  // initPIT(100);
 
 }
 

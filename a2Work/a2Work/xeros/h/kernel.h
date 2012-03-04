@@ -36,6 +36,9 @@ extern void kfree(void *ptr);
 #define KERNEL_INT      80
 #define PROC_STACK      (4096 * 4)
 
+#define TIMER_INT				81
+#define SYSCALL_INT			82
+
 #define STATE_STOPPED   0
 #define STATE_READY     1
 #define STATE_BLOCKED		2
@@ -68,6 +71,7 @@ struct struct_pcb {
     int         pid;
     int         ret;
     long        args;
+    pcb					*sender;
 };
 
 extern pcb     proctab[MAX_PROC];

@@ -9,6 +9,8 @@
 
 #define	IRQBASE		32	/* base ivec for IRQ0			*/
 
+#define IRQ0 			0
+
 struct idt {
 	unsigned short	igd_loffset;
 	unsigned short	igd_segsel;

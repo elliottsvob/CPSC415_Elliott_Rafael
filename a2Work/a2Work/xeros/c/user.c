@@ -9,10 +9,10 @@
 /****************************/
 //n i -> Q
     int         Q;
-		char *msg = (char *) kmalloc (sizeof(char)*13);
+	
     char c[] = "Hello World!\0\n";
-    blkcopy(msg, &c, 13);
-		syssend (3, msg, 13);
+   	int cons = 3;
+		syssend (cons, &c, 15);
     for( Q = 0; Q < 5; Q++ ) {
         kprintf( "Produce %d\n", Q );
 
@@ -28,10 +28,9 @@
 
     int         i;
 		//char  str[] = "hello world!\0";
-		int *prod = (int*) kmalloc(sizeof(int));
-		char *str = (char *) kmalloc (sizeof(char)*15);
-		*prod = 2;
-    sysrecv(prod,str,15);
+		char str[15];
+		int prod = 2;
+    sysrecv(NULL,&str,15);
     kprintf( "Consumer message: %s \n", str );
     for( i = 0; i < 5; i++ ) {
     		//sysputs(str);
@@ -43,6 +42,8 @@
 
     return;
 }
+
+
 
  void     root( void ) {
 /****************************/
@@ -57,6 +58,10 @@
     sysyield();
     int prod = syscreate( &producer, 4096 );
     int cons = syscreate( &consumer, 4096 );
+    
+    
+    kprintf("Produce PID is : %d\n", prod);
+    kprintf("Consume PID is : %d\n", cons);
     
     
 		
