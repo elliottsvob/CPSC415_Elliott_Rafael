@@ -17,7 +17,7 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 		void *recv_buf;
 		int recv_len;
 		int code;
-		process_table_dump();		
+		
 		dest_pcb = &proctab[(dest_pid%MAX_PROC) -1];
 		kprintf("Dest pcb state is: %d\n", dest_pcb->pid);
 		switch (dest_pcb->state){
@@ -49,8 +49,7 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 				code = 0;
 				break;
 				}
-	process_table_dump();		
-	wait();
+	
 
 	return code;
 }
@@ -104,8 +103,7 @@ int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * recv_pcb
 				code = 0;
 				break;
 				}
-	//process_table_dump();
-	//wait();
+
 	return code;
 	
 }
@@ -135,7 +133,7 @@ void process_table_dump()
 		}
 	}
 
-void wait(){
+void pause(){
 	int i = 0;
 	for( i ; i < 9999999;i++){}
 }

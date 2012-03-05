@@ -8,16 +8,17 @@
  void producer( void ) {
 /****************************/
 //n i -> Q
-    int     Q;
+    int     i;
     int q=2;
-		char  c[15] ="Hello World!\0\n"; 
+		char  c[] ="Hello World!\n"; 
 		
 		int cons = 2; 
-		syssend(cons,&c,15);
+		syssend(cons,&c,17);
+		char  print[15];
 
-    for( Q = 0; Q < 5; Q++ ) {
-        kprintf( "Produce %d\n", Q );
-
+    for( i = 0; i < 5; i++  ) {
+    		sprintf(&print, "Produce: %d\n", i);
+    		sysputs(&print);
         sysyield();
     }
 
@@ -29,16 +30,19 @@
 /****************************/
 
     int         i;
-		 char c[15] ;
+    int 				k;
+		 char c[17] ;
 		
 		unsigned int a = 0;
-		sysrecv (&a, &c, 13);
-
-    kprintf( "Consumer message: %s \n", c );
+		sysrecv (&a, &c, 17);
+		char print[15];
+		
+    
+    sysputs(&c);
     for( i = 0; i < 5; i++ ) {
-    		//sysputs(str);
-        kprintf( "Consume %d \n", i );
-        sysyield();
+    		sprintf(&print, "Consumer: %d\n", i);
+    		sysputs(&print);
+    		sysyield();
     }
    
     
@@ -60,18 +64,18 @@ void     foo( void ) {
      
    
     
-    kprintf("Root has been called\n");
+    //kprintf("Root has been called\n");
 	
 	//syscreate( &foo, 4096 );
 	//sysyield();
   
-  //int cons = syscreate( &consumer, 4096 );
-	//int prod = syscreate( &producer, 4096 );
+  int cons = syscreate( &consumer, 4096 );
+	int prod = syscreate( &producer, 4096 );
 
-	kprintf("/-------------------\n");
+	//kprintf("/-------------------\n");
 	//kprintf("Producer ID: %d\n", prod);
 	//kprintf("Consumer ID: %d\n", cons);
-	kprintf("/-------------------\n");
+	//kprintf("/-------------------\n");
     
 
     sysyield();
@@ -85,12 +89,7 @@ void     foo( void ) {
 }
 
 void     idleproc( void ) {
-/****************************/
-
-    kprintf("Idle process has been called\n");  	
-		
-    for( ;; ) {
-        //sysyield();
-    }
+/****************************/		
+    for( ;; );
 }
 

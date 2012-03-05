@@ -9,7 +9,7 @@
 
 #define	IRQBASE		32	/* base ivec for IRQ0			*/
 
-#define IRQ0 			0
+#define TIMER_ISR			32
 
 struct idt {
 	unsigned short	igd_loffset;

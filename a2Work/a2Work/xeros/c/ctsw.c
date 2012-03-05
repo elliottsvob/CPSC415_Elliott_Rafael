@@ -13,6 +13,9 @@ unsigned int        rc;
 int                 trapNo;
 long                args;
 
+int	timer_flag=0;
+int timer_save;
+
 int contextswitch( pcb *p ) {
 /**********************************/
 
@@ -48,7 +51,7 @@ int contextswitch( pcb *p ) {
      * 6.  store the request code, trap flag and args into variables
      * 7.  return to system servicing code
      */
- 		kprintf("ctswBeg\n");
+ 		
     __asm __volatile( " \
         pushf \n\
         pusha \n\
@@ -61,15 +64,14 @@ int contextswitch( pcb *p ) {
         iret \n\
     _timer_entry_point: \n\
     		cli \n\
-    		pushf \n\
     		pusha \n\
+    		movl %%eax, timer_save \n\
     		movl   $0x1, %%eax \n\
+    		addl	 $0xF, timer_flag \n\
     		jmp _common_entry_point \n\
     _syscall_entry_point: \n\
     		cli \n\
-    		pushf \n\
     		pusha \n\
-    		movl	$0x0, %%eax \n\
     _common_entry_point: \n\
         movl    %%eax, %%ebx \n\
         movl    saveESP, %%eax  \n\
@@ -80,7 +82,7 @@ int contextswitch( pcb *p ) {
         popa \n\
         popf \n\
         movl    %%eax, rc \n\
-        movl    %%edx, args \n\
+  			movl    %%edx, args \n\
         "
         : 
         : 
@@ -89,9 +91,12 @@ int contextswitch( pcb *p ) {
 
     /* save esp and read in the arguments
      */
+     if(timer_flag<0){
+     	timer_flag = 0;
+     	}
     p->esp = saveESP;
     p->args = args;
-		kprintf("ctswEnd\n");
+		
     return rc;
 }
 
@@ -99,9 +104,9 @@ void contextinit( void ) {
 /*******************************/
 
    set_evec( SYSCALL_INT,  _syscall_entry_point );
-   set_evec( 32,  _timer_entry_point );
+   set_evec( TIMER_ISR,  _timer_entry_point );
    
-   initPIT(1);
+   initPIT(100);
 		 
 }
 

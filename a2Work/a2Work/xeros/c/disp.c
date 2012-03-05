@@ -38,7 +38,7 @@ void     dispatch( void ) {
       int i;
       r = contextswitch( p );
       	
-      	kprintf("Case : %d\n", r);
+      	//kprintf("Syscall was %d\n" , r);
       switch( r ) {
       case( SYS_CREATE ):
 	ap = (va_list)p->args;
@@ -71,10 +71,8 @@ void     dispatch( void ) {
 	buffer = va_arg(ap, void*);
 	buf_len = va_arg(ap, int); 
 	send_error = send(d_pid, buffer, buf_len,p);
-		kprintf("Message Sent: %s in disp\n", buffer);
 	if ( send_error == SEND_ERROR){	
 		kprintf("Send to process: %d failed\n", d_pid);
-		
 		}
 	else if( send_error == NO_RECV){
 		kprintf("Process: %d not blocking\n", d_pid);
@@ -101,8 +99,8 @@ void     dispatch( void ) {
 	p = next();		
 	break;
 	
-			case ( TIMER_INT ) :
-			kprintf("Timer interupt-disp\n");
+			case ( SYS_TIMER ) :
+		
 	ready( p );
 	p = next();
 	end_of_intr();
@@ -114,7 +112,7 @@ void     dispatch( void ) {
       }
     }
 
-	kprintf( "Out of processes: iddle process\n" );
+	kprintf( "Out of processes: idle process\n" );
 /*	//TODO */
 /*	r = contextswitch( &proctab[IDLE_PROC]);*/
 	
