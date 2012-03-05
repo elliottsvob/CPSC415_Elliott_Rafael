@@ -48,7 +48,7 @@ extern void kfree(void *ptr);
 #define SYS_STOP        0
 #define SYS_YIELD       1
 #define SYS_CREATE      2
-#define SYS_TIMER       3
+//#define SYS_TIMER       3
 #define SYS_PID       	4
 #define SYS_PUTS       	5
 #define SYS_SEND 				6

@@ -78,10 +78,12 @@ void     dispatch( void ) {
 	else if( send_error == NO_RECV){
 		kprintf("Process: %d not blocking\n", d_pid);
 		}
+		
 	p = next();		
 	break;
 	
 			case( SYS_RECV ):	
+			//kprintf("RECV\n");
 	ap = (va_list)p->args; 
 	f_pid = va_arg(ap, unsigned int*);
 	
@@ -100,8 +102,8 @@ void     dispatch( void ) {
 	p = next();		
 	break;
 	
-			case ( SYS_TIMER ) :
-		
+			case ( TIMER_INT ) :
+		//kprintf("timer went off\n");
 	ready( p );
 	p = next();
 	end_of_intr();
@@ -109,7 +111,9 @@ void     dispatch( void ) {
 	
 		
       default:
-	kprintf( "Bad Sys request %d, pid = %d\n", r, p->pid );
+     
+	kprintf( "Bad Sys request %d, pid = %d\n", r, p->pid ); 
+	break;
       }
     }
 

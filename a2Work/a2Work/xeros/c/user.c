@@ -61,13 +61,9 @@ void     foo( void ) {
 /****************************/
 
     int i, j;
-     
-   
-    
-    //kprintf("Root has been called\n");
+  //kprintf("Root has been called\n");
 	
-	//syscreate( &foo, 4096 );
-	//sysyield();
+	
   
   int cons = syscreate( &consumer, 4096 );
 	int prod = syscreate( &producer, 4096 );
@@ -76,13 +72,8 @@ void     foo( void ) {
 	//kprintf("Producer ID: %d\n", prod);
 	//kprintf("Consumer ID: %d\n", cons);
 	//kprintf("/-------------------\n");
-    
-
-    sysyield();
-
-			
-		
-    for( ;; ) 
+	
+     for( ;; ) 
     {
         sysyield();
     };
@@ -90,6 +81,8 @@ void     foo( void ) {
 
 void     idleproc( void ) {
 /****************************/		
-    for( ;; );
+    for( ;; ){
+    sysyield();
+    }
 }
 

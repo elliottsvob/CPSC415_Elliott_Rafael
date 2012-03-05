@@ -12,9 +12,7 @@ unsigned int        saveESP;
 unsigned int        rc;
 int                 trapNo;
 long                args;
-
-int	timer_flag=0;
-int timer_save;
+int 								interrupt;
 
 int contextswitch( pcb *p ) {
 /**********************************/
@@ -65,19 +63,20 @@ int contextswitch( pcb *p ) {
     _timer_entry_point: \n\
     		cli \n\
     		pusha \n\
-    		movl %%eax, timer_save \n\
-    		movl   $0x1, %%eax \n\
-    		addl	 $0xF, timer_flag \n\
+    		movl   $0x1, %%ecx \n\
     		jmp _common_entry_point \n\
     _syscall_entry_point: \n\
     		cli \n\
     		pusha \n\
+    		movl	$0x0, %%ecx \n\
     _common_entry_point: \n\
         movl    %%eax, %%ebx \n\
+        movl		%%ecx, interrupt\n\
         movl    saveESP, %%eax  \n\
         movl    %%esp, saveESP  \n\
         movl    %%eax, %%esp  \n\
         movl    %%ebx, 28(%%esp) \n\
+        movl		%%ecx, 24(%%esp) \n\
         movl    %%edx, 20(%%esp) \n\
         popa \n\
         popf \n\
@@ -91,12 +90,12 @@ int contextswitch( pcb *p ) {
 
     /* save esp and read in the arguments
      */
-     if(timer_flag<0){
-     	timer_flag = 0;
-     	}
+     
     p->esp = saveESP;
     p->args = args;
-		
+		if (interrupt){
+			return TIMER_INT;
+		}
     return rc;
 }
 
