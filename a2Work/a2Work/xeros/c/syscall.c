@@ -52,13 +52,11 @@
 //---------------------------------------------------
 int	sysgetpid( void ){
 /**************************/
-
     return( syscall( SYS_PID ) );
 }
 
 void	sysputs( char *str ){
 /**************************/
-	
     syscall( SYS_PUTS, str );
 }
 //---------------------------------------------------
@@ -72,7 +70,7 @@ int syssend( int dest_pid, void * buffer, int buffer_len){
 // Done by ES
 //---------------------------------------------------
 int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len ){
-		
+/**************************/
 		return( syscall(SYS_RECV, *from_pid, buffer, buffer_len));
 }
 

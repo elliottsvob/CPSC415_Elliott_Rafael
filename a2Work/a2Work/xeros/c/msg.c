@@ -6,10 +6,17 @@
 
 /* Your code goes here */
 int ipc_valid(int* d, void * b, int l);
+
 void process_table_dump();
+
 void push(pcb *s, pcb*r);
+
 pcb*poll(pcb*r);
+
 int peek(pcb*r);
+//-----------------------------------------------------------------
+//							Public Methods
+//-----------------------------------------------------------------
 int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 {
 		pcb * dest_pcb;
@@ -109,9 +116,39 @@ int recv(unsigned int  * from_pid, void * buffer, int buffer_len, pcb * recv_pcb
 	return code;
 	
 }
+//-----------------------------------------------------------------
+//							Helper Methods
+//-----------------------------------------------------------------
+void push(pcb *s, pcb*r){
+/*** Add a sending process (s) to the receivers (r) queue */
+		pcb *temp = r;
+		while(temp->senderQ){
+			temp = temp->senderQ;
+		}
+		temp->senderQ = s;
+}
 
+pcb * poll(pcb*r)
+{
+/*** Add a sending process (s) to the receivers (r) queue */
+	pcb * s = r->senderQ;
+	r->senderQ = r->senderQ->senderQ;
+	return s;
+	
+}
+
+int peek(pcb*r)
+{
+/*** check whether there are senders in the process Q */
+	return r->senderQ ? 1:0;
+}
+
+//-----------------------------------------------------------------
+//							Testing Methods
+//-----------------------------------------------------------------
 void process_table_dump()
 {
+/*** This method prints the state and process id store in the PCB */
 	pcb*p;
 	
 	int i; 
@@ -136,26 +173,7 @@ void process_table_dump()
 	}
 
 void wait(){
+/*** Empty loop that gives time to observe the program output */
 	int i = 0;
 	for( i ; i < 9999999;i++){}
 }
-
-void push(pcb *s, pcb*r){
-		pcb *temp = r;
-		while(temp->sender){
-			temp = temp->sender;
-		}
-		temp->sender = s;
-}
-pcb * poll(pcb*r)
-{
-	pcb * s = r->sender;
-	r->sender = r->sender->sender;
-	return s;
-	
-}
-int peek(pcb*r)
-{
-	return r->sender ? 1:0;
-}
-

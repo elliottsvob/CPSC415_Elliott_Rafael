@@ -74,7 +74,7 @@ struct struct_pcb {
     int         pid;
     int         ret;
     long        args;
-    pcb 				*sender;
+    pcb 				*senderQ;
 
 
 };
@@ -111,9 +111,6 @@ extern pcb      *next( void );
 extern void     contextinit( void );
 extern int      contextswitch( pcb *p );
 extern int      create( funcptr fp, int stack );
-
-
-
 
 extern int      syscreate( funcptr fp, int stack );
 extern int      sysyield( void );

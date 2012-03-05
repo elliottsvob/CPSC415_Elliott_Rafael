@@ -97,10 +97,10 @@ int contextswitch( pcb *p ) {
 
 void contextinit( void ) {
 /*******************************/
-
+	
    set_evec( SYSCALL_INT,  _syscall_entry_point );
    set_evec( 32,  _timer_entry_point );
-   
+   //TODO: divider was set to 1 for debugging purposes 
    initPIT(1);
 		 
 }
