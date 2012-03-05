@@ -1,3 +1,4 @@
+
 /* syscall.c : syscalls
  */
 
@@ -75,4 +76,5 @@ int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len ){
 		
 		return( syscall(SYS_RECV, *from_pid, buffer, buffer_len));
 }
+
 

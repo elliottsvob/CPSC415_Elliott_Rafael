@@ -102,11 +102,12 @@ int contextswitch( pcb *p ) {
 
 void contextinit( void ) {
 /*******************************/
-
+	
    set_evec( SYSCALL_INT,  _syscall_entry_point );
+
    set_evec( TIMER_ISR,  _timer_entry_point );
    
    initPIT(100);
-		 
+
 }
 
