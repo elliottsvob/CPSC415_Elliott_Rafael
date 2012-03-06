@@ -20,7 +20,7 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 		int code;
 		
 		dest_pcb = &proctab[(dest_pid%MAX_PROC) -1];
-		kprintf("Dest pcb state is: %d\n", dest_pcb->pid);
+		//kprintf("Dest pcb state is: %d\n", dest_pcb->pid);
 		switch (dest_pcb->state){
 			case (STATE_BLOCKED):
 				recvr_args = (va_list)dest_pcb->args;
@@ -115,7 +115,7 @@ void process_table_dump()
 	
 	int i; 
 	kprintf("-------------------------------------------\n");
-	for (i=0;i < 4; i++){
+	for (i=0;i < 6; i++){
 		p = &proctab[i];
 		kprintf("Process: %d at index: %d \nHas State:",     p->pid,i);
 		

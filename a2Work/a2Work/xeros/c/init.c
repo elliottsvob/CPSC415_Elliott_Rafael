@@ -39,11 +39,13 @@ initproc()				/* The beginning */
 	contextinit();
 	kprintf("context inited inited\n");
 	
+	create( idleproc, PROC_STACK );
+	
 	create( root, PROC_STACK );
 	kprintf("create inited\n");
 
 	//Idle Process Call by RT
-	//create( idleproc, PROC_STACK );
+	
   
 	dispatch();
   

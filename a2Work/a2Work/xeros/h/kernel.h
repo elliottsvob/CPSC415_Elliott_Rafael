@@ -53,6 +53,7 @@ extern void kfree(void *ptr);
 #define SYS_PUTS       	5
 #define SYS_SEND 				6
 #define SYS_RECV				7
+#define SYS_SLEEP				8
 
 
 //IPC constants
@@ -63,6 +64,8 @@ extern void kfree(void *ptr);
 
 //Idle process constant by RT
 #define IDLE_PROC	1
+
+#define QUANTUM 100
 
 typedef void    (*funcptr)(void);
 
@@ -76,7 +79,8 @@ struct struct_pcb {
     int         ret;
     long        args;
     pcb 				*sender;
-
+		pcb					*sleep_next;
+		int 				sleep_time;
 
 };
 
@@ -113,15 +117,15 @@ extern void     contextinit( void );
 extern int      contextswitch( pcb *p );
 extern int      create( funcptr fp, int stack );
 
-
-
-
 extern int      syscreate( funcptr fp, int stack );
 extern int      sysyield( void );
 extern int      sysstop( void );
 //unsigned 
-extern int	sysgetpid( void );
-extern void	sysputs( char *str );
+extern int		sysgetpid( void );
+extern int	sysputs( char *str );
+extern int 	syssleep (unsigned int milliseconds);
+extern void		tick( void );
+extern  int 	sleep (pcb*p, unsigned int milliseconds);
 //---------------------------------------------------
 // IPC Done by ES
 //---------------------------------------------------
@@ -129,6 +133,8 @@ extern int syssend( int dest_pid, void * buffer, int buffer_len);
 extern int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len);
 extern int send(int dest_pid, void *buffer, int buffer_len, pcb*s);
 extern int recv(unsigned int  *from_pid, void * buffer, int buffer_len,pcb*r);
+
+extern void process_table_dump();
 //---------------------------------------------------
 // 3.6 by RT
 //---------------------------------------------------

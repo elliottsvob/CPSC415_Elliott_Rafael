@@ -76,7 +76,6 @@ int contextswitch( pcb *p ) {
         movl    %%esp, saveESP  \n\
         movl    %%eax, %%esp  \n\
         movl    %%ebx, 28(%%esp) \n\
-        movl		%%ecx, 24(%%esp) \n\
         movl    %%edx, 20(%%esp) \n\
         popa \n\
         popf \n\
@@ -106,7 +105,7 @@ void contextinit( void ) {
 
    set_evec( TIMER_ISR,  _timer_entry_point );
    
-   initPIT(100);
+   initPIT(QUANTUM);
 
 }
 

@@ -57,10 +57,10 @@ int	sysgetpid( void ){
     return( syscall( SYS_PID ) );
 }
 
-void	sysputs( char *str ){
+int	sysputs( char *str ){
 /**************************/
 	
-    syscall( SYS_PUTS, str );
+    return syscall( SYS_PUTS, str );
 }
 //---------------------------------------------------
 // Done by ES
@@ -75,6 +75,10 @@ int syssend( int dest_pid, void * buffer, int buffer_len){
 int sysrecv( unsigned int *from_pid, void *buffer, int buffer_len ){
 		
 		return( syscall(SYS_RECV, *from_pid, buffer, buffer_len));
+}
+int syssleep(unsigned int milliseconds)
+{
+	return syscall(SYS_SLEEP, milliseconds);
 }
 
 
