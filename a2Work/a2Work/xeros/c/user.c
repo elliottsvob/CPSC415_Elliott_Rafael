@@ -7,6 +7,7 @@
 int cons;
 int prod;
 static int root_pid;
+
  void producer( void ) {
 /****************************/
 //n i -> Q
@@ -55,26 +56,32 @@ static int root_pid;
 }
 void     foo( void ) {
 /****************************/
-		syssleep(1000);
+		//syssleep(1000);
+
 		char c[50];
 		int i = sysgetpid();
 		sprintf(c, "foo Process %d is alive\n", i);
 		sysputs(c);
+
 		syssleep(5000);
+
 		int sleep_time;
-		char s_t[5];
-		memset(s_t,0,5);
-		int r_call = sysrecv(&root_pid,s_t,5);
-		char r[5];
+		int s_t = -1;
+		//memset(s_t,0,5);
+		int r_call = sysrecv(&root_pid,&s_t,4);
+		
+		char r[50];
 		sprintf(r, "PID: %d Sysrecv returned: %d\n", i,r_call); 
 		sysputs(r);
+
 		if(!r_call){
 			memset(c, 0, 50);
 			sprintf(c, "PID: %d Error receiving from Root\n", i);
 			sysputs(c);
 			return;
 		}
-			sleep_time =  atoi(s_t);
+			sleep_time = s_t; 
+//atoi(s_t);
 			syssleep(sleep_time);
 			memset(c, 0, 50);
 			sprintf(c, "PID: %d sleep finished, exiting slept: %d\n", i,sleep_time);
@@ -86,6 +93,7 @@ void     foo( void ) {
 /****************************/
 
     int a,b,c,d,i;
+    int ret;
   //kprintf("Root has been called\n");
 		char msg[128];
 		
@@ -120,15 +128,38 @@ void     foo( void ) {
 		
 		
 		
-		char a_time[5];sprintf(a_time, "%d",10000);
-		char b_time[4];sprintf(b_time, "%d",7000);
-		char c_time[5];sprintf(c_time, "%d", 27000);
-		char d_time[5];sprintf(d_time, "%d",20000);
+		int a_time = 10000;//[5];sprintf(a_time, "%d",10000);
+		int b_time = 7000;//[4];sprintf(b_time, "%d",7000);
+		int c_time = 20000;//[5];sprintf(c_time, "%d", 27000);
+		int d_time = 27000;//[5];sprintf(d_time, "%d",20000);
 		
-		syssend(a,&a_time,5);
-		syssend(b,&b_time,4);
-		syssend(c,&c_time,5);
-		syssend(d,&d_time,5);
+		char r[50];
+
+		ret = syssend(a,&a_time,4);
+		sprintf(r, "PID: %d Syssend returned: %d\n", a ,ret); 
+		sysputs(r);	
+		memset(r,0,5);
+		ret = -1;
+
+
+		ret = syssend(b,&b_time,4);
+		sprintf(r, "PID: %d Syssend returned: %d\n", b ,ret); 
+		sysputs(r);	
+		memset(r,0,5);
+		ret = -1;
+
+		ret = syssend(c,&c_time,4);
+		sprintf(r, "PID: %d Syssend returned: %d\n", c ,ret); 
+		sysputs(r);	
+		memset(r,0,5);
+		ret = -1;
+
+		ret = syssend(d,&d_time,4);
+		sprintf(r, "PID: %d Syssend returned: %d\n", d ,ret); 
+		sysputs(r);	
+		memset(r,0,5);
+		ret = -1;
+
 		
 		
 		

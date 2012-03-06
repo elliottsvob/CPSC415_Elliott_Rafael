@@ -79,7 +79,8 @@ void     dispatch( void ) {
 	else if( send_error == NO_RECV){
 		kprintf("Process: %d not blocking\n", d_pid);
 		}
-		
+	//KEY: The syssend return value wasn-t return to the process
+	p->ret = send_error;
 	p = next();		
 	break;
 	
@@ -100,6 +101,8 @@ void     dispatch( void ) {
 	if(recv_error == PARAM_ERROR){
 		kprintf("Receive error\n");
 	}
+	//KEY: The sysrecv return value wasn-t return to the process
+	p->ret = recv_error;
 	p = next();		
 	break;
 	
