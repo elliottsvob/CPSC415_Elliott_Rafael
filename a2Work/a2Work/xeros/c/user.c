@@ -6,7 +6,7 @@
 /* Your code goes here */
 int cons;
 int prod;
-static int root_pid;
+int root_pid;
  void producer( void ) {
 /****************************/
 //n i -> Q
@@ -56,28 +56,25 @@ static int root_pid;
 void     foo( void ) {
 /****************************/
 		syssleep(1000);
-		char c[50];
+		char c[128];
 		int i = sysgetpid();
 		sprintf(c, "foo Process %d is alive\n", i);
 		sysputs(c);
 		syssleep(5000);
-		int sleep_time;
-		char s_t[5];
-		memset(s_t,0,5);
-		int r_call = sysrecv(&root_pid,s_t,5);
-		char r[5];
-		sprintf(r, "PID: %d Sysrecv returned: %d\n", i,r_call); 
-		sysputs(r);
+	
+		char *sleep_time="00000";
+		int r_call = sysrecv(&root_pid,sleep_time, 5);
+	
 		if(!r_call){
-			memset(c, 0, 50);
+			memset(c, 0, 128);
 			sprintf(c, "PID: %d Error receiving from Root\n", i);
 			sysputs(c);
 			return;
 		}
-			sleep_time =  atoi(s_t);
-			syssleep(sleep_time);
-			memset(c, 0, 50);
-			sprintf(c, "PID: %d sleep finished, exiting slept: %d\n", i,sleep_time);
+			
+			syssleep(atoi(sleep_time));
+			memset(c, 0, 128);	
+			sprintf(c, "Slept for %d\n",sleep_time);		
 			sysputs(c);
 			
 }
@@ -117,18 +114,16 @@ void     foo( void ) {
 		
 		syssleep(4000);
 		
+		char a_time="10000";
+		char b_time="7000";
+		char c_time="27000";
+		char d_time="20000";
 		
+		syssend(a,a_time,5);
+		syssend(b,b_time,4);
+		syssend(c,c_time,5);
+		syssend(d,d_time,5);
 		
-		
-		char a_time[5];sprintf(a_time, "%d",10000);
-		char b_time[4];sprintf(b_time, "%d",7000);
-		char c_time[5];sprintf(c_time, "%d", 27000);
-		char d_time[5];sprintf(d_time, "%d",20000);
-		
-		syssend(a,&a_time,5);
-		syssend(b,&b_time,4);
-		syssend(c,&c_time,5);
-		syssend(d,&d_time,5);
 		
 		
 		

@@ -18,28 +18,30 @@ int send(int dest_pid, void *buffer, int buffer_len, pcb * send_pcb)
 		void *recv_buf;
 		int recv_len;
 		int code;
-		
+		unsigned int * c;
 		dest_pcb = &proctab[(dest_pid%MAX_PROC) -1];
 		//kprintf("Dest pcb state is: %d\n", dest_pcb->pid);
+		
 		switch (dest_pcb->state){
 			case (STATE_BLOCKED):
+			
 				recvr_args = (va_list)dest_pcb->args;
-				va_arg(recvr_args,unsigned int*);
-				recv_buf = va_arg(recvr_args, void*);
-				recv_len = va_arg(recvr_args, int);
-				
-				if (recv_len < buffer_len){
+				c = va_arg(recvr_args,unsigned int*);
+				if (c = send_pcb->pid || !c){
+					recv_buf = va_arg(recvr_args, void*);
+					recv_len = va_arg(recvr_args, int);
+					if (recv_len < buffer_len){
 						blkcopy(recv_buf, buffer, recv_len);
 						code = recv_len;
-				}else {
+					}else {
 						blkcopy(recv_buf, buffer, buffer_len);
 						code = buffer_len;
-				}
+					}
 				
 				ready(dest_pcb);
 				ready(send_pcb);
+				}
 				break;
-				
 			case (STATE_STOPPED):
 				code = -1;
 				break;
