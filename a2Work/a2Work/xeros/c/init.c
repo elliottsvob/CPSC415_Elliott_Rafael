@@ -7,7 +7,11 @@ extern	int	entry();        /* start of kernel image, use &start    */
 extern	int	end();          /* end of kernel image, use &end        */
 extern  long	freemem; 	/* start of free memory (set in i386.c) */
 extern char	*maxaddr;	/* max memory address (set in i386.c)	*/
-
+extern void test_1_and_2();
+extern void test3();
+extern void test4a();
+extern void test4b();
+extern void test5();
 /************************************************************************/
 /***				NOTE:				      ***/
 /***								      ***/
@@ -41,12 +45,16 @@ initproc()				/* The beginning */
 	
 	create( idleproc, PROC_STACK );
 	
-	create( root, PROC_STACK );
+	//create( root, PROC_STACK );
 	kprintf("create inited\n");
 
-	//Idle Process Call by RT
-	
-  
+	//Tests
+	//Note: execute the tests one at a time to get the expected result
+	//create( &test_1_and_2, PROC_STACK);
+	//create( &test3, PROC_STACK);
+	//create( &test4a, PROC_STACK);
+	//create( &test4b, PROC_STACK);
+  create (&test5,PROC_STACK);
 	dispatch();
   
 	kprintf("Returned to init, you should never get here!\n");

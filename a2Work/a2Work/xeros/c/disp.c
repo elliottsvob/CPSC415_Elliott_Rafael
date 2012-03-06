@@ -10,7 +10,7 @@ static pcb      *tail = NULL;
 
 static pcb 			*b_head = NULL;
 static pcb			*b_tail = NULL;
-
+void clear();
 void     dispatch( void ) {
 /********************************/
 
@@ -41,59 +41,76 @@ void     dispatch( void ) {
       r = contextswitch( p );
       
       switch( r ) {
-      	case( SYS_CREATE ):
-					ap = (va_list)p->args;
-					fp = (funcptr)(va_arg( ap, int ) );
-					stack = va_arg( ap, int );
-					p->ret = create( fp, stack );
-					break;
-      	case( SYS_YIELD ):
-					ready( p );
-					p = next();
-					break;
-     		case( SYS_STOP ):
-					p->state = STATE_STOPPED;
-					kfree((void*)p->stack_top);
-					p = next();
-					break;
-     		case( SYS_PID ):
-					p->ret = p->pid;
-					break;
-      	case( SYS_PUTS ):
- 					ap = (va_list)p->args;
-					str = va_arg(ap,char*);
-					kprintf( "%s", str );	
-					break;
-				case( SYS_SEND ):
-					ap =(va_list)p->args;
-					d_pid = va_arg(ap, int);
-					buffer = va_arg(ap, void*);
-					buf_len = va_arg(ap, int); 
-					send_error = send(d_pid, buffer, buf_len,p);
-					if ( send_error == SEND_ERROR){	
-						kprintf("Send to process: %d failed\n", d_pid);
-					}
-					else if( send_error == NO_RECV){
-						kprintf("Process: %d not blocking\n", d_pid);
-					}
-					p = next();		
-				break;
+
+      case( SYS_CREATE ):
+	ap = (va_list)p->args;
+	fp = (funcptr)(va_arg( ap, int ) );
+	stack = va_arg( ap, int );
+	p->ret = create( fp, stack );
+	break;
+      case( SYS_YIELD ):
+	ready( p );
+	p = next();
+	break;
+      case( SYS_STOP ):
+	p->state = STATE_STOPPED;
+	kfree((void*)p->stack_top);
+	clear(p);
+	p = next();
+	break;
+      case( SYS_PID ):
+	p->ret = p->pid;
+	
+	break;
+      case( SYS_PUTS ):
+  ap = (va_list)p->args;
+	str = va_arg(ap,char*);
+	kprintf( "%s", str );
+	
+	break;
+			case( SYS_SEND ):
+	ap =(va_list)p->args;
+	d_pid = va_arg(ap, int);
+	buffer = va_arg(ap, void*);
+	buf_len = va_arg(ap, int); 
+	send_error = send(d_pid, buffer, buf_len,p);
+	if ( send_error == SEND_ERROR){	
+		kprintf("Send to process: %d failed\n", d_pid);
+		ready(p);
+		}
+	else if( send_error == NO_RECV){
+		kprintf("Process: %d not blocking\n", d_pid);
+				ready(p);
+		}
+	//KEY: The syssend return value wasn-t return to the process
+	p->ret = send_error;
+	p = next();		
+	break;
+	
 			case( SYS_RECV ):	
 			//kprintf("RECV\n");
-				ap = (va_list)p->args; 
-				f_pid = va_arg(ap, unsigned int*);
-			//	kprintf("PID is: %d\n", f_pid);
-		 		buffer = va_arg(ap, void*);
-				buf_len = va_arg(ap, int); 	
-				recv_error = recv(f_pid, buffer, buf_len,p);
-				if(recv_error == INVALID_PID){
-					kprintf("Process id: %d is invalid\n", *f_pid);
-				}
-				if(recv_error == PARAM_ERROR){
-					kprintf("Receive error\n");
-				}
-				p = next();		
-				break;
+	ap = (va_list)p->args; 
+	f_pid = va_arg(ap, unsigned int*);
+	
+	//	kprintf("PID is: %d\n", f_pid);
+	 
+	buffer = va_arg(ap, void*);
+	buf_len = va_arg(ap, int); 	
+	recv_error = recv(f_pid, buffer, buf_len,p);
+
+	if(recv_error == INVALID_PID){
+		kprintf("Process id: %d is invalid\n", *f_pid);
+				ready(p);
+	}
+	if(recv_error == PARAM_ERROR){
+		kprintf("Receive error\n");
+				ready(p);
+	}
+	//KEY: The sysrecv return value wasn't return to the process
+	p->ret = recv_error;
+	p = next();		
+	break;
+
 	
 			case ( TIMER_INT ) :
 				//kprintf("timer went off\n");
@@ -175,4 +192,12 @@ extern pcb      *next( void ) {
 		}
     return( p );
 }
+//Clears a pcb's waiting sender queue to avoid deadlock
+void clear(pcb* p){	
+	while(p->sender){
+		p->sender->ret = -1;
+		ready(p->sender);
+		p = p->sender;
+		}
+	}
 
